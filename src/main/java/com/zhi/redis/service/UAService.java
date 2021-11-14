@@ -15,6 +15,8 @@ public class UAService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
     private static final String BASE_HEADER = "InputKeyAndValue";
+    private static final String SIGN_IN_HEADER = "SIGN_IN_";
+
     private static final String DAU_HEADER = "DAU_";
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd");
 
@@ -31,9 +33,9 @@ public class UAService {
     }
 
     public boolean signIn(String username, int day){
-        Boolean aBoolean = redisTemplate.opsForValue().setBit(username, day, true);
+        Boolean aBoolean = redisTemplate.opsForValue().setBit(SIGN_IN_HEADER + username, day, true);
 
-        if (aBoolean != null && aBoolean)
+        if (aBoolean != null && !aBoolean)
             globalSignUsedHyperLogLog(username);
 
         return true;
@@ -49,7 +51,13 @@ public class UAService {
     }
 
     private boolean globalSignUsedHyperLogLog(String username) {
-        redisTemplate.opsForHyperLogLog().add(username);
+        String key = DAU_HEADER + simpleDateFormat.format(new Date());
+        redisTemplate.opsForHyperLogLog().add(key, username);
         return true;
+    }
+
+    public Long getDAU() {
+        String key = DAU_HEADER + simpleDateFormat.format(new Date());
+        return redisTemplate.opsForHyperLogLog().size(key);
     }
 }

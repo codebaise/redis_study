@@ -25,4 +25,8 @@ public class UAController {
         return uaService.checkSignInRecordByUsername(username);
     }
 
+    @GetMapping("/getDAU")
+    public long checkDAU() {
+        return uaService.getDAU();
+    }
 }
