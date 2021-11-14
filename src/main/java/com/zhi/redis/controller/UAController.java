@@ -4,8 +4,6 @@ import com.zhi.redis.service.UAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
-
 @RestController
 public class UAController {
 
